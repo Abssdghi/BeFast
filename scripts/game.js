@@ -18,17 +18,23 @@ t = init = Math.min(Number(t), 16);
 
 const gameTimeEl = document.getElementById("gametime");
 
+let interval = null;
+let currentOnFinish = null;
+
 function round(time, bgColor, onFinish) {
     document.body.style.backgroundColor = bgColor;
     gameTimeEl.textContent = time;
 
-    const interval = setInterval(() => {
+    currentOnFinish = onFinish;
+
+    interval = setInterval(() => {
         time--;
         gameTimeEl.textContent = time;
 
         if (time <= 0) {
             clearInterval(interval);
-            onFinish(); // start next round
+            interval = null;
+            onFinish();
         }
     }, 1000);
 }
@@ -42,6 +48,14 @@ function startNextRound() {
         startNextRound();
     });
 }
+
+document.addEventListener("click", () => {
+    if (interval) {
+        clearInterval(interval);
+        interval = null;
+        currentOnFinish?.();
+    }
+});
 
 // start loop
 startNextRound();
