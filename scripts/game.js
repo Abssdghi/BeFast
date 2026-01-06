@@ -1,9 +1,47 @@
 const params = new URLSearchParams(window.location.search);
-let t = params.get("t") ?? "3";
-if (!params.has("t") || params.get("t") === null || isNaN(Number(params.get("t"))) || Number(params.get("t")) % 1 !== 0 || Number(params.get("t")) < 3 || params.get("t").includes("-")) {
-    t = 3;
+
+let init = params.get("t") ?? "3";
+let t = init;
+
+// validate t
+if (
+    !params.has("t") ||
+    isNaN(Number(t)) ||
+    Number(t) % 1 !== 0 ||
+    Number(t) < 3 ||
+    t.includes("-")
+) {
+    t = init = 3;
 }
-if (Number(t) > 16) {
-    t = 16;
+
+t = init = Math.min(Number(t), 16);
+
+const gameTimeEl = document.getElementById("gametime");
+
+function round(time, bgColor, onFinish) {
+    document.body.style.backgroundColor = bgColor;
+    gameTimeEl.textContent = time;
+
+    const interval = setInterval(() => {
+        time--;
+        gameTimeEl.textContent = time;
+
+        if (time <= 0) {
+            clearInterval(interval);
+            onFinish(); // start next round
+        }
+    }, 1000);
 }
-document.getElementById("gametime").textContent = `${t}s`;
+
+// infinite loop logic
+let isRed = true;
+
+function startNextRound() {
+    round(init, isRed ? "#EF4444" : "#38bdf8", () => {
+        isRed = !isRed;
+        startNextRound();
+    });
+}
+
+// start loop
+startNextRound();
