@@ -34,7 +34,7 @@ function round(time, bgColor, onFinish) {
         if (time <= 0) {
             clearInterval(interval);
             interval = null;
-            onFinish();
+            window.location.href = "../pages/endgame.html?c=" + (bgColor === "#EF4444" ? "RED" : "BLUE") + "&t=" + init;
         }
     }, 1000);
 }
