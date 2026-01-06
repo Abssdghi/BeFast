@@ -9,7 +9,7 @@ function increaseSeconds() {
 }
 
 function goToGame(time) {
-    window.location.href = "/pages/game.html?t=" + time;
+    window.location.href = "./pages/game.html?t=" + time;
     const timeDiv = document.getElementById("gametime");
     timeDiv.textContent = time + "s";
 }
