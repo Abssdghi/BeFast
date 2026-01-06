@@ -21,7 +21,16 @@ const gameTimeEl = document.getElementById("gametime");
 let interval = null;
 let currentOnFinish = null;
 
+function endgame(bgColor) {
+    const a = new Audio('../assets/lose.mp3');
+    a.currentTime = 0;
+    a.play().catch(() => {});
+    gameTimeEl.style.fontSize = "5rem";
+    gameTimeEl.textContent = (bgColor === "#EF4444" ? "RED" : "BLUE") + " LOST"
+}
+
 function round(time, bgColor, onFinish) {
+    gameTimeEl.style.fontSize = "9xl";
     document.body.style.backgroundColor = bgColor;
     gameTimeEl.textContent = time;
 
@@ -29,17 +38,16 @@ function round(time, bgColor, onFinish) {
 
     interval = setInterval(() => {
         time--;
-        gameTimeEl.textContent = time;
-
         if (time <= 0) {
             clearInterval(interval);
             interval = null;
-            window.location.href = "../pages/endgame.html?c=" + (bgColor === "#EF4444" ? "RED" : "BLUE") + "&t=" + init;
+            endgame(bgColor)
+            return;
         }
+        gameTimeEl.textContent = time;
     }, 1000);
 }
 
-// infinite loop logic
 let isRed = true;
 
 function startNextRound() {
@@ -50,12 +58,15 @@ function startNextRound() {
 }
 
 document.addEventListener("click", () => {
+    gameTimeEl.style.fontSize = "8rem";
     if (interval) {
         clearInterval(interval);
         interval = null;
         currentOnFinish?.();
+    } else {
+        isRed = !isRed;
+        startNextRound();
     }
 });
 
-// start loop
 startNextRound();
